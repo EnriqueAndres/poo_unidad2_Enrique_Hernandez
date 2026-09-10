@@ -1,53 +1,52 @@
 package app.Model;
 
-public abstract class Pedido {
+public class Pedido {
 
-    private int idPedido;
+    private final int id;
     private String direccionEntrega;
-    private double distanciaKm;
-    protected String repartidor;
+    private  EstadoPedido estado;
+    
 
-    public Pedido(int idPedido, String direccionEntrega, double distanciaKm) {
-        this.idPedido = idPedido;
+    public Pedido(int id, String direccionEntrega, EstadoPedido estado) {
+        this.id = id;
         this.direccionEntrega = direccionEntrega;
-        this.distanciaKm = distanciaKm;
-        this.repartidor = "Sin repartidor";
+        this.estado = estado;
     }
     //getters
     public int getIdPedido() {
-        return idPedido;
+        return this.id;
     }
 
     public String getDireccionEntrega() {
         return direccionEntrega;
     }
 
-    public double getDistanciaKm() {
-        return distanciaKm;
+    public EstadoPedido getEstado() {
+        return estado;
     }
 
-    public String getRepartidor(){
-        return repartidor;
+    //setters
+    public void setDireccionEntrega(String direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
+    }
+
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
     }
 
     //metodo
-    public void mostrarResumen(){
-        System.out.println("Dirección de Entrega: " + direccionEntrega + ", Distancia: " + distanciaKm + " km");
+    public void setEstado(String nuevoEstado){
+        try {
+            this.estado = EstadoPedido.valueOf(nuevoEstado.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Estado no reconocible para el pedido #" + this.id);
+        }     
+    }
+    
+    @Override 
+    public String toString() {
+        return "Pedido #" + id + ", Dirección: " + direccionEntrega + ", Estado: " + estado;
     }
 
-    public void asignarRepartidor(){}
 
-    public void asignarRepartidor(String repartidor){
-        if (repartidor != null && !repartidor.isEmpty()){
-            this.repartidor = repartidor;
-    
-        }else{
-            this.repartidor = "Anonimo";
-        }
-        
-    }
-
-    //metodo abstracto
-    public abstract double calcularTiempoEntrega();
-    
 }

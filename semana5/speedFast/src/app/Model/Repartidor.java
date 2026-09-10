@@ -1,15 +1,15 @@
 package app.Model;
-
 import java.util.List;
 import java.util.Random;
+import app.Sincronizacion.ZonaDeCarga;
 
 public class Repartidor implements Runnable {
     private String nombre;
-    private List<Pedido> pedidosAsignados;
+    private final ZonaDeCarga zonaDeCarga;
 
-    public Repartidor(String nombre, List<Pedido> pedidosAsignados) {
+    public Repartidor(String nombre, ZonaDeCarga zonaDeCarga) {
         this.nombre = nombre;
-        this.pedidosAsignados = pedidosAsignados;
+        this.zonaDeCarga = zonaDeCarga;
     }
 
     //getters
@@ -17,8 +17,8 @@ public class Repartidor implements Runnable {
         return this.nombre;
     }
 
-    public List<Pedido> getPedidosAsignados() {
-        return this.pedidosAsignados;
+    public ZonaDeCarga getZonaDeCarga() {
+        return this.zonaDeCarga;
     }
 
 
@@ -26,17 +26,30 @@ public class Repartidor implements Runnable {
     public void run(){
         Random random = new Random();
 
-        for(Pedido pedido : pedidosAsignados){
+        while(true){
+            Pedido pedido = zonaDeCarga.retirarPedido();
+            // para terminar el bucle
+            if(pedido == null){break;}
+
             try{
-            System.out.println("Repartidor: " + this.nombre + ", Entregando " + pedido.getClass().getSimpleName() + " #"+ pedido.getIdPedido()+"...");
+            System.out.println("Repartidor: " + this.nombre + ", retirando pedido " + " #"+ pedido.getIdPedido()+"...");
                 
             int simulacionEntrega = random.nextInt(3000) + 1000;
             Thread.sleep(simulacionEntrega);
+            
+            pedido.setEstado(EstadoPedido.EN_REPARTO);
+            System.out.println("Repartidor: "+ this.nombre + " | Estado: " + pedido.getEstado());
 
+            Thread.sleep(simulacionEntrega);
 
-            System.out.println("Repartidor: "+ this.nombre + " Pedido #" + pedido.getIdPedido()+ " entregado.");
+            System.out.println("Repartidor: "+ this.nombre + " | Pedido #" + pedido.getIdPedido()+ " entregado.");
+            Thread.sleep(simulacionEntrega);
+            pedido.setEstado(EstadoPedido.ENTREGADO);
+            System.out.println("Repartidor: "+ this.nombre + " | Estado: " + pedido.getEstado());
+
             }catch(InterruptedException e){
                 Thread.currentThread().interrupt();
+                return;
             }
 
         }
