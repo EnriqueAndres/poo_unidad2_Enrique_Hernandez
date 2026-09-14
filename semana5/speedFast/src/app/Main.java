@@ -38,6 +38,7 @@ public class Main{
         zonaDeCarga.agregarPedido(pedido4);
         zonaDeCarga.agregarPedido(pedido5);
 
+        System.out.println("\n");
 
         //Ejecucion de hilos
         ExecutorService executor = Executors.newFixedThreadPool(3);
